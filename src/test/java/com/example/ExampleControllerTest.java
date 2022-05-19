@@ -20,7 +20,14 @@ class ExampleControllerTest {
     HttpClient httpClient;
 
     @Test
-    void shouldReturn400WithMissingPostBody() {
+    void expectedBadRequest() {
+        var e = assertThrows(HttpClientResponseException.class, () ->
+            httpClient.toBlocking().exchange(HttpRequest.POST("/", "foo")));
+        assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
+    }
+
+    @Test
+    void unexpectedInternalServerError() {
         var e = assertThrows(HttpClientResponseException.class, () ->
             httpClient.toBlocking().exchange(HttpRequest.POST("/", "")));
         assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
